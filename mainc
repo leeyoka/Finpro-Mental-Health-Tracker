@@ -1,1 +1,88 @@
-printf("Semoga bisa semuanya!")
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+// Enum for stress levels
+typedef enum {
+    JOYFUL,
+    MODERATE,
+    CRITICAL
+} MentalHealthStatus;
+
+// Struct for user data
+typedef struct {
+    char name[50];
+    int *dailyScores;  // Dynamically allocated array for 7 days
+    int averageScore;
+    MentalHealthStatus status;
+} WeeklyLog;
+
+// Function prototypes
+void displayWelcome();
+void getDailyInput(WeeklyLog *user);
+int calculateAverageScore(int scores[], int days);
+MentalHealthStatus classifyMentalHealth(int averageScore);
+void displayWeeklyRecap(WeeklyLog *user);
+void displayRecommendations(MentalHealthStatus status);
+
+int main() {
+    // Allocate memory for WeeklyLog struct
+    WeeklyLog *user = (WeeklyLog *)malloc(sizeof(WeeklyLog));
+    if (user == NULL) {
+        printf("Memory allocation failed for user!\n");
+        return 1;
+    }
+
+    user->dailyScores = (int *)malloc(7 * sizeof(int));
+    if (user->dailyScores == NULL) {
+        printf("Memory allocation failed for dailyScores!\n");
+        free(user);
+        return 1;
+    }
+
+    printf("Welcome to the Weekly Mental Health Tracker!\n");
+    displayWelcome();
+
+    getDailyInput(user);
+
+    // Calculate average weekly score and classify mental health
+    user->averageScore = calculateAverageScore(user->dailyScores, 7);
+    user->status = classifyMentalHealth(user->averageScore);
+
+    displayWeeklyRecap(user);
+    displayRecommendations(user->status);
+
+    free(user->dailyScores);
+    free(user);
+
+    return 0;
+}
+
+
+// Welcome message
+void displayWelcome() {
+    printf("**************************************************\n");
+    printf("      WEEKLY MENTAL HEALTH ASSESSMENT TOOL      \n");
+    printf(" Input your daily feelings for 7 days and get:   \n");
+    printf("   insights into your mental well-being with      \n");
+    printf("          personalized recommendations!!         \n");
+    printf("**************************************************\n\n");
+}
+
+// Input user daily responses
+void getDailyInput(WeeklyLog *user) {
+    printf("Enter your name: ");
+    fgets(user->name, 50, stdin);    
+   user->name[strcspn(user->name, "\n")] = '\0'; 
+
+    printf("\nPlease answer the following daily questions on a scale of 1-4:\n");
+    printf("1: Never | 2: Sometimes | 3: Often | 4: Always\n");
+
+    char *questions[] = {
+        "How often do you feel happy?",
+        "How often do you feel overwhelmed?",
+        "Do you get 7+ hours of sleep daily?",
+        "Do you feel supported by friends/family?",
+        "How often do you exercise weekly?"
+    };
+
