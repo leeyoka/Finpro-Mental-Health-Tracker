@@ -85,4 +85,95 @@ void getDailyInput(WeeklyLog *user) {
         "Do you feel supported by friends/family?",
         "How often do you exercise weekly?"
     };
+for (int day = 0; day < 7; day++) {
+        printf("\n--- Day %d ---\n", day + 1);
+        int dailyTotal = 0;
+        for (int i = 0; i < 5; i++) {
+            int response;
+            do {
+                printf("%s ", questions[i]);
+                scanf("%d", &response);
+                if (response < 1 || response > 4) {
+                    printf("Invalid input! Please enter a number between 1 and 4.\n");
+                }
+            } while (response < 1 || response > 4);
+            dailyTotal += response;
+        }
+        user->dailyScores[day] = dailyTotal;
+    }
+}
 
+// Calculate the average score for the week
+int calculateAverageScore(int scores[], int days) {
+    int total = 0;
+    for (int i = 0; i < days; i++) {
+        total += scores[i];
+    }
+    return total / days; // Return average score
+}
+
+// Classify mental health status based on average score
+MentalHealthStatus classifyMentalHealth(int averageScore) {
+    if (averageScore >= 15) {
+        return JOYFUL;
+    } else if (averageScore >= 10) {
+        return MODERATE;
+    } else {
+        return CRITICAL;
+    }
+}
+
+// Display weekly recap
+void displayWeeklyRecap(WeeklyLog *user) {
+    printf("\n--- Weekly Recap for %s ---\n", user->name);
+    printf("Daily Scores: ");
+    for (int i = 0; i < 7; i++) {
+        printf("%d ", user->dailyScores[i]);
+    }
+    printf("\nAverage Weekly Score: %d\n", user->averageScore);
+
+    // Display mental health status
+    printf("Mental Health Status: ");
+    switch (user->status) {
+        case JOYFUL:
+            printf("JOYFUL\n");
+            break;
+        case MODERATE:
+            printf("MODERATE\n");
+            break;
+        case CRITICAL:
+            printf("CRITICAL\n");
+            break;
+    }
+}
+
+// Display recommendations based on mental health status
+void displayRecommendations(MentalHealthStatus status) {
+    printf("\n--- Personalized Recommendations ---\n");
+    switch (status) {
+        case JOYFUL:
+            printf("Great job! Keep up your healthy habits!! Youre awsome!!\n");
+            printf("Recommendations:\n");
+            printf("- Continue regular exercise, any exercise that you like!\n");
+            printf("- Eat a balanced diet: Include fruits, vegetables, and lean proteins, also its okay to sometimes eat your favorite junk food, but keep it balance!!\n");
+            printf("- Search some new hobbies that can always lights up your mood!!\n");
+            break;
+
+        case MODERATE:
+             printf("You're doing okay, but you need some tips to improve yourself <3\n");
+            printf("Recommendations:\n");
+            printf("- Try light physical activities like walking or yoga or any small activities you like!!\n");
+            printf("- Add omega-3 rich foods (e.g., salmon, walnuts)\n");
+            printf("- Don't overthink too much! You're doing just fine, take some good rest okay!\n");
+            break;
+
+        case CRITICAL:
+            printf("Your well-being needs attention :( Please prioritize yourself and be kind to yourself, youre always the best!.\n");
+            printf("Recommendations:\n");
+            printf("- Talk to a mental health professional or trusted person <3\n");
+            printf("- Practice mindfulness and deep breathing exercises\n");
+            printf("- Include nutrient-dense foods like leafy greens, nuts, and seeds! Eat some sweet foods its also okay if it makes you better but not too much okay!!\n");
+            printf("- Always keep in mind that you are on the right track, don't worry too much about what others thinks about you, focus more on yourself so that you can get nice, peaceful sleep! Please take a good rest love ;)\n");
+  break;
+    }
+}
